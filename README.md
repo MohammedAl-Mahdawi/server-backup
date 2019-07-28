@@ -46,7 +46,7 @@ npm install server-backup -g
 Go to an empty folder that you have permissions to write into it and run:
 
 ```shell
-sb b now
+server-backup b now
 ```
 
 ### How it works
@@ -140,7 +140,7 @@ The sources are self-explained, you can have as many sources as you want, the so
 <a name="commands"></a>
 
 ```shell
-  Usage: sb [options] [command]
+  Usage: server-backup [options] [command]
 
   PC/Server backup CLI app to backup to ANY CLOUD supported by rclone.org.
 
@@ -157,13 +157,13 @@ The sources are self-explained, you can have as many sources as you want, the so
 For example you can run:
 
 ```shell
-sb b
+server-backup b
 ```
 
 or
 
 ```shell
-sb backup
+server-backup backup
 ```
 
 To run the backup and create the configurations and sources files if they do not exist.
@@ -171,49 +171,49 @@ To run the backup and create the configurations and sources files if they do not
 This option will run the backup in schedule mode, if you want to run the backup immediately you can run:
 
 ```shell
-sb b now
+server-backup b now
 ```
 
 or
 
 ```shell
-sb backup now
+server-backup backup now
 ```
 
 To create/recreate the configurations file run:
 
 ```shell
-sb c
+server-backup c
 ```
 
 or
 
 ```shell
-sb configurations
+server-backup configurations
 ```
 
 To create/recreate the sources file run:
 
 ```shell
-sb s
+server-backup s
 ```
 
 or
 
 ```shell
-sb sources
+server-backup sources
 ```
 
 To get help run:
 
 ```
-sb -h
+server-backup -h
 ```
 
 or
 
 ```
-sb --help
+server-backup --help
 ```
 
 ### Questions
@@ -231,7 +231,7 @@ There are a lot of tools, however, you can use [PM2](https://github.com/Unitech/
    module.exports = {
    apps: [{
        name: 'ServerBackup',
-       script: 'sb',
+       script: 'server-backup',
        cwd: '/path/to/this/folder/',
        args: 'b'
    }]
