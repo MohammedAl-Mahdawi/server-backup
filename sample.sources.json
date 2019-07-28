@@ -1,0 +1,32 @@
+[
+    {
+        "type": "files",
+        "archive": true,
+        "path": "/media/mohammed/My Passport/Dir/my-files",
+        "name": "my-files"
+    },
+    {
+        "type": "files",
+        "archive": false,
+        "path": "/media/mohammed/My Passport/Dir/Pictures"
+    },
+    {
+        "type": "file",
+        "path": "/media/mohammed/My Passport/Dir/Pictures/featured.jpg"
+    },
+    {
+        "type": "mySQL",
+        "DbName": "tajer",
+        "DbUser": "root",
+        "DbPassword": ""
+    },
+    {
+        "type": "mySQL",
+        "DbName": "ServerBackupTest",
+        "DbUser": "root"
+    },
+    {
+        "type": "mongoDB",
+        "DbName": "sb"
+    }
+]

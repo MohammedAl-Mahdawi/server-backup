@@ -1,0 +1,216 @@
+#!/usr/bin/env node
+const fs = require('fs'),
+  path = require('path'),
+  join = path.join,
+  program = require('commander'),
+  inquirer = require('inquirer'),
+  chalk = require('chalk'),
+  schedule = require('node-schedule')
+
+const { sourcesBuilder } = require('../lib/sources-builder')
+const { configBuilder } = require('../lib/config-builder')
+const { runBackup } = require('../lib/run-backup')
+
+function ServerBackupWriteFile(file, data) {
+  return new Promise((resolve, reject) => {
+    var wstream = fs.createWriteStream(file)
+
+    wstream.on('finish', function() {
+      resolve()
+    })
+
+    wstream.write(data)
+    wstream.end()
+  })
+}
+
+function isConfigExist() {
+  let dir = process.cwd()
+
+  if (fs.existsSync(join(dir, 'sb.config.json'))) {
+    return dir
+  }
+
+  return false
+}
+
+function isSourcesExist() {
+  let dir = process.cwd()
+
+  if (fs.existsSync(join(dir, 'sb.sources.json'))) {
+    return dir
+  }
+
+  return false
+}
+
+async function generateAndSaveConfig() {
+  var config = await configBuilder()
+  var writeConfigFile = await ServerBackupWriteFile(
+    join(process.cwd(), 'sb.config.json'),
+    JSON.stringify(config, null, '\t')
+  )
+  return config
+}
+
+async function generateAndSaveDest() {
+  var sources = await sourcesBuilder()
+  var writeSourcesFile = await ServerBackupWriteFile(
+    join(process.cwd(), 'sb.sources.json'),
+    JSON.stringify(sources, null, '\t')
+  )
+  return sources
+}
+
+var askForConfigPermission = [
+  {
+    type: 'confirm',
+    name: 'askForOverwrite',
+    message:
+      'No configurations found, do you want to add them now (just hit enter for YES)?',
+    default: true
+  }
+]
+
+var askForDestPermission = [
+  {
+    type: 'confirm',
+    name: 'askForOverwrite',
+    message:
+      'No sources found, do you want to add them now (just hit enter for YES)?',
+    default: true
+  }
+]
+
+async function run(now) {
+  try {
+    if (!isConfigExist()) {
+      var answers = await inquirer.prompt(askForConfigPermission)
+      if (answers.askForOverwrite) {
+        var config = await generateAndSaveConfig()
+      } else {
+        console.log(chalk.red(`Can't continue without the configurations!`))
+        process.exit()
+      }
+    } else {
+      var config = require(join(process.cwd(), 'sb.config.json'))
+    }
+
+    if (!isSourcesExist()) {
+      var answers = await inquirer.prompt(askForDestPermission)
+
+      if (answers.askForOverwrite) {
+        var sources = await generateAndSaveDest()
+      } else {
+        console.log(chalk.red(`Can't continue without the sources!`))
+        process.exit()
+      }
+    } else {
+      var sources = require(join(process.cwd(), 'sb.sources.json'))
+    }
+
+    global.SBConfig = config
+    global.SBSources = sources
+
+    /**
+     * Run the backup
+     */
+    if (now) {
+      runBackup(true)
+    } else {
+      var rule = new schedule.RecurrenceRule()
+      rule.hour = SBConfig.backupAtHour
+      rule.minute = SBConfig.backupAtMinute
+
+      var j = schedule.scheduleJob(rule, function() {
+        runBackup()
+      })
+    }
+  } catch (error) {
+    console.log(chalk.red(error))
+  }
+}
+
+program
+  .version('1.0.0')
+  .description(
+    'PC/Server backup CLI app to backup to ANY CLOUD supported by rclone.org.'
+  )
+
+program
+  .command('configurations')
+  .alias('c')
+  .description('Reset the configurations')
+  .action(async () => {
+    try {
+      if (isConfigExist()) {
+        var askForPermission = [
+          {
+            type: 'confirm',
+            name: 'askForOverwrite',
+            message:
+              'The configurations file already exist! do you want to overwrite it (just hit enter for YES)?',
+            default: true
+          }
+        ]
+
+        var answers = await inquirer.prompt(askForPermission)
+        if (answers.askForOverwrite) {
+          var config = await generateAndSaveConfig()
+        }
+      } else {
+        var config = await generateAndSaveConfig()
+      }
+    } catch (error) {
+      console.log(chalk.red(error))
+    }
+  })
+
+program
+  .command('sources')
+  .alias('s')
+  .description('Reset sources')
+  .action(async () => {
+    try {
+      if (isSourcesExist()) {
+        var askForPermission = [
+          {
+            type: 'confirm',
+            name: 'askForOverwrite',
+            message:
+              'The sources file already exist! do you want to overwrite it (just hit enter for YES)?',
+            default: true
+          }
+        ]
+
+        var answers = await inquirer.prompt(askForPermission)
+        if (answers.askForOverwrite) {
+          var sources = await generateAndSaveDest()
+        }
+      } else {
+        var sources = await generateAndSaveDest()
+      }
+    } catch (error) {
+      console.log(chalk.red(error))
+    }
+  })
+
+program
+  .command('backup [now]')
+  .alias('b')
+  .description(
+    'Backup, using the existing configurations and sources, or create them if they do not exist.'
+  )
+  .action(now => {
+    run(now)
+  })
+
+program.parse(process.argv)
+
+function make_red(txt) {
+  return chalk.red(txt)
+}
+
+if (!process.argv.slice(2).length) {
+  program.outputHelp(make_red)
+}
