@@ -1,6 +1,6 @@
 {
   "name": "server-backup",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A CLI application that allows you to backup what you want and when you want from your PC/server to ANY CLOUD supported by rclone.org.",
   "bin": "./bin/server-backup",
   "author": {
