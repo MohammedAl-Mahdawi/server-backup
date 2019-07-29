@@ -132,7 +132,7 @@ async function run(now) {
 }
 
 program
-  .version('1.0.3')
+  .version('1.0.4')
   .description(
     'PC/Server backup CLI app to backup to ANY CLOUD supported by rclone.'
   )
