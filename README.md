@@ -1,6 +1,6 @@
 # ServerBackup
 
-A CLI application that allows you to backup what you want and when you want from your PC/server to ANY CLOUD/DESTINATION supported by rclone.org.
+A CLI application that allows you to backup what you want and when you want from your PC/server to ANY CLOUD/DESTINATION supported by [rclone.org](https://rclone.org).
 
 ## Table of Contents
 
@@ -26,7 +26,7 @@ A CLI application that allows you to backup what you want and when you want from
 <a name="requirements"></a>
 
 1. First, make sure you have the latest version of [Node.js](https://nodejs.org) installed.
-2. Make sure [rclone](rclone.org) installed and the remote that you want to backup to is configured and working(we just need the remote name here).
+2. Make sure [rclone.org](https://rclone.org) installed and the remote that you want to backup to is configured and working(we just need the remote name here).
 3. ServerBackup relies on `mysqldump` and `mongodump` to backup MySQL and MongoDB databases, so make sure these tools are installed if you are planning to backup these databases.
 
 ### Installation
@@ -142,7 +142,7 @@ The sources are self-explained, you can have as many sources as you want, the so
 ```shell
   Usage: server-backup [options] [command]
 
-  PC/Server backup CLI app to backup to ANY CLOUD supported by rclone.org.
+  PC/Server backup CLI app to backup to ANY CLOUD supported by rclone.
 
   Options:
     -V, --version     output the version number

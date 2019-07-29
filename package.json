@@ -1,7 +1,7 @@
 {
   "name": "server-backup",
   "version": "1.0.3",
-  "description": "A CLI application that allows you to backup what you want and when you want from your PC/server to ANY CLOUD supported by rclone.org.",
+  "description": "A CLI application that allows you to backup what you want and when you want from your PC/server to ANY CLOUD supported by rclone.",
   "bin": "./bin/server-backup",
   "author": {
     "name": "Mohammed Al-Mahdawi",
@@ -13,7 +13,6 @@
     "url": "https://github.com/MohammedAl-Mahdawi/server-backup"
   },
   "keywords": [
-    "server-backup",
     "server-backup",
     "Alibaba Cloud",
     "Amazon Drive",
@@ -56,7 +55,8 @@
     "The local filesystem",
     "backup",
     "stream",
-    "chunk"
+    "chunk",
+    "sb"
   ],
   "license": "MIT",
   "dependencies": {
